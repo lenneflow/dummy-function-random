@@ -24,12 +24,13 @@ public class FunctionController {
     private static final Logger logger = LoggerFactory.getLogger(FunctionController.class);
 
     final RestTemplate restTemplate;
+    Random random = new Random();
 
     public FunctionController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    @PostMapping("/sleep")
+    @PostMapping("/random")
     @Async
     public void sleep(@RequestBody FunctionPayload functionPayload){
         String callBackUrl = functionPayload.getCallBackUrl();
@@ -38,15 +39,14 @@ public class FunctionController {
             String keyMax = "maxValue";
             int minValue = (int) functionPayload.getInputData().get(keyMin);
             int maxValue = (int) functionPayload.getInputData().get(keyMax);
-            logger.info("Getting a random value between " + minValue + " and " + maxValue);
-            Random random = new Random();
+            logger.info("Getting a random value between {} and {}", minValue, maxValue);
             int randomValue = random.nextInt(maxValue - minValue) + minValue;
-            logger.info("Random value is " + randomValue);
+            logger.info("Random value is {}", randomValue);
             functionPayload.setRunStatus(RunStatus.COMPLETED);
             Map<String, Object> output = new HashMap<>();
             output.put("randomValue" , randomValue);
             functionPayload.setOutputData(output);
-            logger.info("call the callback url " + callBackUrl);
+            logger.info("call the callback url {}", callBackUrl);
             restTemplate.postForObject(callBackUrl, functionPayload, Void.class);
             logger.info("Payload sent successfully");
         }catch (Exception e){
