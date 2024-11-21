@@ -33,7 +33,7 @@ public class FunctionController {
 
     @PostMapping("/start")
     @Async
-    public void sleep(@RequestBody FunctionPayload functionPayload){
+    public void random(@RequestBody FunctionPayload functionPayload){
         String callBackUrl = functionPayload.getCallBackUrl();
         try {
             String keyMin = "minValue";
